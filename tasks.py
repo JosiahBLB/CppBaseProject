@@ -16,7 +16,7 @@ SRC_PATH: Path = Path(__file__).parent
 VCPKG_TOOLCHAIN = SRC_PATH / "vcpkg/scripts/buildsystems/vcpkg.cmake"
 WORKSPACE: Path = Path("/tmp/builds/cpp")
 MD5: Optional[str] = None
-BUILD_PATH: Optional[Path] = SRC_PATH / "build"
+BUILD_PATH: Optional[Path] = None
 INSTALL_PATH: Optional[Path] = None
 
 
