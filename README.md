@@ -2,8 +2,8 @@
 This serves as a template for any cpp projects, majority of this code was taken from Prateek Raman's repository.
 His talk and repository can be found below:
 
-Repositoy: https://github.com/vvnraman/cppcon-2022-cpp-neovim-toy-calc
-CppCon talk: https://www.youtube.com/watch?v=nzRnWUjGJl8
+- Repositoy: https://github.com/vvnraman/cppcon-2022-cpp-neovim-toy-calc
+- CppCon talk: https://www.youtube.com/watch?v=nzRnWUjGJl8
 
 ## Getting Started
 There are a number of things you need to do before you can start using this template:
