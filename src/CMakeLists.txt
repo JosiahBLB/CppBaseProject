@@ -1,6 +1,6 @@
 # This directory is a space for all of your main code
-
-add_executable(main main.cpp)
+file(GLOB SRC_FILES "*.cpp")
+add_executable(main ${SRC_FILES})
 # add your packages, you should see examples when you run './vcpkg/vcpkg install'
 
 # Some exmaples:

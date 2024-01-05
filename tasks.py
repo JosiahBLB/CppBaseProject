@@ -3,7 +3,6 @@ This requires invoke to be installed on the machine (not venv), which can be
 done via:
     pipx install invoke
 """
-from datetime import datetime
 from hashlib import md5
 from pathlib import Path
 from shutil import rmtree as shutil_rmtree
@@ -11,13 +10,14 @@ from typing import Optional
 
 from invoke import task
 
-PROJECT: str = "game-of-life"
+PROJECT: str = "data-structures-and-algorithms"
 SRC_PATH: Path = Path(__file__).parent
 VCPKG_TOOLCHAIN = SRC_PATH / "vcpkg/scripts/buildsystems/vcpkg.cmake"
 WORKSPACE: Path = Path("/tmp/builds/cpp")
 MD5: Optional[str] = None
 BUILD_PATH: Optional[Path] = None
 INSTALL_PATH: Optional[Path] = None
+EXE_PATH: Optional[Path] = None
 
 
 def get_md5(content: str) -> str:
@@ -92,21 +92,16 @@ def do_config(c):
             src_ccdb_file.symlink_to(build_ccdb_file)
 
 
-@task
-def build(c, config=False):
+@task(aliases=["b"])
+def build(c):
     """Run builds via cmake."""
     build_path = get_build_path()
 
     if not build_path.exists():
-        if config:
-            do_config(c)
-        else:
-            print("Error: build path doesn't exist.")
-            return
+        do_config(c)
 
     cmd = ["cmake", "--build", str(build_path)]
     c.run(" ".join(cmd), pty=True)
-
 
 @task
 def install(c):
@@ -122,15 +117,9 @@ def install(c):
     c.run(" ".join(cmd), env={"DESTDIR": install_path}, pty=True)
 
 
-@task
+@task(aliases=["c"])
 def clean(c):
     """Clean build directory."""
-    # Don't clean during CppCon and the week before/after
-    _, week, _ = datetime.now().isocalendar()
-    if week in (36, 37, 38):
-        print(f"I'm sorry I can't do that Dave as the current week is {week}.")
-        return
-
     build_path = get_build_path()
     if build_path.exists():
         shutil_rmtree(build_path)
@@ -146,6 +135,20 @@ def clean_all(c):
     if install_path.exists():
         shutil_rmtree(install_path)
         print(f"Cleaned {install_path}")
+    else:
+        print("Install path absent. Nothing to do.")
+
+
+@task(aliases=["e"])
+def execute(c, clean=False, build=True):
+    """Run the executable"""
+    if clean:
+        c.run("inv c")
+    if build:
+        c.run("inv b")
+    build_path = get_build_path()
+    if build_path.exists():
+        c.run(str(build_path / "src/main"), pty=True)
     else:
         print("Install path absent. Nothing to do.")
 
