@@ -37,7 +37,7 @@ git submodule update --init --recursive
 }
 ```
 
-6. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code to <module>/CMakeLists.txt be able to use a given library. I have added some instructions to help you with this in each CMakeLists.txt
+6. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code in your CMakeLists.txt files of which I have added some instructions to help you with this in each file.
 7. Run
 
 ```sh
