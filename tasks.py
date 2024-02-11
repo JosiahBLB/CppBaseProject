@@ -7,17 +7,21 @@ from hashlib import md5
 from pathlib import Path
 from shutil import rmtree as shutil_rmtree
 from typing import Optional
-
 from invoke import task
 
+# TODO: replace "my-project" with the name of the project
 PROJECT: str = "my-project"
+# TODO: (Optional): Specify your build and install locations
+BUILD_PATH: Optional[Path] = None
+INSTALL_PATH: Optional[Path] = None
+# TODO: (Optional): Specify your C++ verison
+CMAKE_CXX_STANDARD: int = 17
+CMAKE_CXX_STANDARD_REQUIRED: bool = True
+
 SRC_PATH: Path = Path(__file__).parent
 VCPKG_TOOLCHAIN = SRC_PATH / "vcpkg/scripts/buildsystems/vcpkg.cmake"
-CMAKE_CXX_STANDARD = 17
 WORKSPACE: Path = Path("/tmp/builds/cpp")
 MD5: Optional[str] = None
-BUILD_PATH: Optional[Path] = SRC_PATH / "build"
-INSTALL_PATH: Optional[Path] = None
 
 
 def get_md5(content: str) -> str:
@@ -82,7 +86,7 @@ def do_config(c):
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=1",
         f"-DCMAKE_TOOLCHAIN_FILE={str(VCPKG_TOOLCHAIN)}",
         f"-DCMAKE_CXX_STANDARD={str(CMAKE_CXX_STANDARD)}",
-        "-DCMAKE_CXX_STANDARD_REQUIRED=TRUE",
+        f"-DCMAKE_CXX_STANDARD_REQUIRED={int(CMAKE_CXX_STANDARD_REQUIRED)}",
     ]
     c.run(" ".join(cmd), pty=True)
 
@@ -128,6 +132,19 @@ def install(c):
 def clean(c):
     """Clean build directory."""
     build_path = get_build_path()
+    src_ccdb_file = SRC_PATH / "compile_commands.json"
+    build_ccdb_file = build_path / "compile_commands.json"
+    print(src_ccdb_file)
+
+    # Remove symlink
+    if src_ccdb_file.is_symlink():
+        print("src compile_commands.json exists")
+        src_ccdb_file.unlink()
+    if build_ccdb_file.exists():
+        print("build compile_commands.json exists")
+        build_ccdb_file.unlink()
+
+    # Delete build directory
     if build_path.exists():
         shutil_rmtree(build_path)
         print(f"Cleaned {build_path}")
@@ -151,7 +168,7 @@ def test(c):
     """Run tests"""
     build_path = get_build_path()
     if build_path.exists():
-        cmd = ["ctest", "--test-dir build"]
+        cmd = ["ctest", f"--test-dir {BUILD_PATH}"]
         c.run(" ".join(cmd), pty=True)
     else:
         print("Build path absent. Nothing to do.")
