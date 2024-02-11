@@ -82,7 +82,7 @@ def do_config(c):
         "-B",
         str(build_path),
         "-GNinja",
-        "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
+        "-DCMAKE_BUILD_TYPE=Release",
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=1",
         f"-DCMAKE_TOOLCHAIN_FILE={str(VCPKG_TOOLCHAIN)}",
         f"-DCMAKE_CXX_STANDARD={str(CMAKE_CXX_STANDARD)}",
@@ -99,18 +99,21 @@ def do_config(c):
 
 
 @task
-def build(c, config=False):
+def build(c, config="Release", jobs=1, verbose=False):
     """Run builds via cmake."""
     build_path: Path = get_build_path()
 
     if not build_path.exists():
-        if config:
-            do_config(c)
-        else:
-            print("Error: build path doesn't exist. Have you run config?")
-            return
+        do_config(c)
 
-    cmd = ["cmake", "--build", str(build_path)]
+    cmd = [
+        "cmake",
+        f"--build {str(build_path)}",
+        f"--config {str(config)}",
+        f"--parallel {jobs}",
+    ]
+    if verbose:
+        cmd += ["--verbose"]
     c.run(" ".join(cmd), pty=True)
 
 

@@ -20,7 +20,7 @@ brew install lsd
 python -m pip install invoke
 ```
 
-3. Complete the TODO's in both the tasks.py and top level CMakeLists.txt files.
+3. Complete the TODO's in both the tasks.py and the top level CMakeLists.txt files.
 4. run
 
 ```sh
@@ -29,7 +29,7 @@ git submodule update --init --recursive
 
 ```
 
-5. Add the required c++ libraries to your vcpkg.json i,e:
+5. Search for a c++ library use `./vcpkg/vcpkg search <package-name>` and add it to your vcpkg.json i,e:
 
 ```json
 {
