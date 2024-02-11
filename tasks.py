@@ -3,7 +3,6 @@ This requires invoke to be installed on the machine (not venv), which can be
 done via:
     pipx install invoke
 """
-from datetime import datetime
 from hashlib import md5
 from pathlib import Path
 from shutil import rmtree as shutil_rmtree
@@ -11,9 +10,10 @@ from typing import Optional
 
 from invoke import task
 
-PROJECT: str = "game-of-life"
+PROJECT: str = "my-project"
 SRC_PATH: Path = Path(__file__).parent
 VCPKG_TOOLCHAIN = SRC_PATH / "vcpkg/scripts/buildsystems/vcpkg.cmake"
+CMAKE_CXX_STANDARD = 17
 WORKSPACE: Path = Path("/tmp/builds/cpp")
 MD5: Optional[str] = None
 BUILD_PATH: Optional[Path] = SRC_PATH / "build"
@@ -81,6 +81,8 @@ def do_config(c):
         "-DCMAKE_BUILD_TYPE=RelWithDebInfo",
         "-DCMAKE_EXPORT_COMPILE_COMMANDS=1",
         f"-DCMAKE_TOOLCHAIN_FILE={str(VCPKG_TOOLCHAIN)}",
+        f"-DCMAKE_CXX_STANDARD={str(CMAKE_CXX_STANDARD)}",
+        "-DCMAKE_CXX_STANDARD_REQUIRED=TRUE",
     ]
     c.run(" ".join(cmd), pty=True)
 
@@ -95,13 +97,13 @@ def do_config(c):
 @task
 def build(c, config=False):
     """Run builds via cmake."""
-    build_path = get_build_path()
+    build_path: Path = get_build_path()
 
     if not build_path.exists():
         if config:
             do_config(c)
         else:
-            print("Error: build path doesn't exist.")
+            print("Error: build path doesn't exist. Have you run config?")
             return
 
     cmd = ["cmake", "--build", str(build_path)]
@@ -125,12 +127,6 @@ def install(c):
 @task
 def clean(c):
     """Clean build directory."""
-    # Don't clean during CppCon and the week before/after
-    _, week, _ = datetime.now().isocalendar()
-    if week in (36, 37, 38):
-        print(f"I'm sorry I can't do that Dave as the current week is {week}.")
-        return
-
     build_path = get_build_path()
     if build_path.exists():
         shutil_rmtree(build_path)
@@ -148,6 +144,17 @@ def clean_all(c):
         print(f"Cleaned {install_path}")
     else:
         print("Install path absent. Nothing to do.")
+
+
+@task
+def test(c):
+    """Run tests"""
+    build_path = get_build_path()
+    if build_path.exists():
+        cmd = ["ctest", "--test-dir build"]
+        c.run(" ".join(cmd), pty=True)
+    else:
+        print("Build path absent. Nothing to do.")
 
 
 @task
