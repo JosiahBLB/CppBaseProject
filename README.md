@@ -1,6 +1,6 @@
 # Cpp Template
 
-This serves as a template for any cpp projects, majority of this code was taken from Prateek Raman's repository.
+This serves as a template for any cpp projects, some of this code was taken from Prateek Raman's repository.
 His talk and repository can be found below:
 
 - Repositoy: https://github.com/vvnraman/cppcon-2022-cpp-neovim-toy-calc
@@ -10,15 +10,17 @@ His talk and repository can be found below:
 
 There are a number of things you need to do before you can start using this template:
 
-1. Download the dependencies with your chosen package manager (apt, brew, etc): clang, cmake, ninja and invoke (pip)
+1. Download the following dependencies with your chosen package manager, I am using `brew` but you may use `apt`:
 
 ```sh
-apt install clang
-apt install cmake
-apt install ninja
+brew install clang
+brew install cmake
+brew install ninja
+brew install lsd
+python -m pip install invoke
 ```
 
-3. Define your `project-name` in the tasks.py file
+3. Complete the TODO's in both the tasks.py and top level CMakeLists.txt files.
 4. run
 
 ```sh
@@ -31,7 +33,11 @@ git submodule update --init --recursive
 
 ```json
 {
-  "dependencies": ["opengl", "something-else"]
+  "dependencies": [
+    "gtest",
+    "package2",
+    "package3"
+  ]
 }
 ```
 
