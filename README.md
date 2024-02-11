@@ -20,8 +20,8 @@ brew install lsd
 python -m pip install invoke
 ```
 
-3. Complete the TODO's in both the tasks.py and the top level CMakeLists.txt files.
-4. run
+2. Complete the TODO's in both the tasks.py and the top level CMakeLists.txt files.
+3. run
 
 ```sh
 git submodule update --init --recursive
@@ -29,7 +29,7 @@ git submodule update --init --recursive
 
 ```
 
-5. Search for a c++ library use `./vcpkg/vcpkg search <package-name>` and add it to your vcpkg.json i,e:
+4. Search for a c++ library use `./vcpkg/vcpkg search <package-name>` and add it to your vcpkg.json i,e:
 
 ```json
 {
@@ -37,8 +37,8 @@ git submodule update --init --recursive
 }
 ```
 
-6. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code in your CMakeLists.txt files of which I have added some instructions to help you with this in each file.
-7. Run
+5. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code in your CMakeLists.txt files of which I have added some instructions to help you with this in each file.
+6. Run
 
 ```sh
 inv config
@@ -46,4 +46,4 @@ inv build
 inv test
 ```
 
-9. Tell Josiah he's a good bugger
+7. Tell Josiah he's a good bugger
