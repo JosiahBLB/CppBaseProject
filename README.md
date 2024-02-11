@@ -37,8 +37,6 @@ git submodule update --init --recursive
 }
 ```
 
-To search for a library use `./vcpkg/vcpkg search <package-name>`
-
 6. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code to <module>/CMakeLists.txt be able to use a given library. I have added some instructions to help you with this in each CMakeLists.txt
 7. Run
 
