@@ -33,23 +33,19 @@ git submodule update --init --recursive
 
 ```json
 {
-  "dependencies": [
-    "gtest",
-    "package2",
-    "package3"
-  ]
+  "dependencies": ["gtest", "package2", "package3"]
 }
 ```
 
 To search for a library use `./vcpkg/vcpkg search <package-name>`
 
-6. Run `./vcpkg/vcpkg install`
-7. Configure Each CMakeLists.txt (See files for more instructions)
-8. Run
+6. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code to <module>/CMakeLists.txt be able to use a given library. I have added some instructions to help you with this in each CMakeLists.txt
+7. Run
 
 ```sh
-cmake -G Ninja -B build
-ninja -C build
+inv config
+inv build
+inv test
 ```
 
 9. Tell Josiah he's a good bugger
