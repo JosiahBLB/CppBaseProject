@@ -1,3 +1,9 @@
+# Original MIT-licensed code by Prateek Raman
+# Modified by Josiah Brough, 2025
+# 
+# This file contains portions of MIT-licensed code. 
+# Original license text: https://github.com/vvnraman/cppcon-2022-cpp-neovim-toy-calc/blob/main/LICENSE
+
 """
 This requires invoke to be installed on the machine (not venv), which can be
 done via:
@@ -9,20 +15,19 @@ from shutil import rmtree as shutil_rmtree
 from typing import Optional
 from invoke import task
 
+SRC_PATH: Path = Path(__file__).parent
+VCPKG_TOOLCHAIN = SRC_PATH / "vcpkg/scripts/buildsystems/vcpkg.cmake"
+WORKSPACE: Path = Path("/tmp/builds/cpp")
+
+MD5: Optional[str] = None
 # TODO: replace "my-project" with the name of the project
 PROJECT: str = "my-project"
 # TODO: (Optional): Specify your build and install locations
 BUILD_PATH: Optional[Path] = None
 INSTALL_PATH: Optional[Path] = None
 # TODO: (Optional): Specify your C++ verison
-CMAKE_CXX_STANDARD: int = 17
+CMAKE_CXX_STANDARD: int = 26
 CMAKE_CXX_STANDARD_REQUIRED: bool = True
-
-SRC_PATH: Path = Path(__file__).parent
-VCPKG_TOOLCHAIN = SRC_PATH / "vcpkg/scripts/buildsystems/vcpkg.cmake"
-WORKSPACE: Path = Path("/tmp/builds/cpp")
-MD5: Optional[str] = None
-
 
 def get_md5(content: str) -> str:
     global MD5
@@ -90,6 +95,11 @@ def do_config(c):
     ]
     c.run(" ".join(cmd), pty=True)
 
+    # Symlink the build directory
+    src_build = SRC_PATH / "build"
+    if not src_build.exists():
+        src_build.symlink_to(build_path)
+
     # Symlink compile_commands.json
     src_ccdb_file = SRC_PATH / "compile_commands.json"
     build_ccdb_file = build_path / "compile_commands.json"
@@ -98,8 +108,8 @@ def do_config(c):
             src_ccdb_file.symlink_to(build_ccdb_file)
 
 
-@task
-def build(c, config="Release", jobs=1, verbose=False):
+@task(aliases=["b"])
+def build(c, config="Release", verbose=False):
     """Run builds via cmake."""
     build_path: Path = get_build_path()
 
@@ -110,7 +120,7 @@ def build(c, config="Release", jobs=1, verbose=False):
         "cmake",
         f"--build {str(build_path)}",
         f"--config {str(config)}",
-        f"--parallel {jobs}",
+        "--parallel",
     ]
     if verbose:
         cmd += ["--verbose"]
@@ -131,15 +141,18 @@ def install(c):
     c.run(" ".join(cmd), env={"DESTDIR": install_path}, pty=True)
 
 
-@task
+@task(aliases=["c"])
 def clean(c):
     """Clean build directory."""
     build_path = get_build_path()
     src_ccdb_file = SRC_PATH / "compile_commands.json"
     build_ccdb_file = build_path / "compile_commands.json"
-    print(src_ccdb_file)
 
-    # Remove symlink
+    # Remove symlinks
+    src_build = SRC_PATH / "build"
+    if not src_build.exists():
+        print("build symlink exists")
+        src_build.unlink()
     if src_ccdb_file.is_symlink():
         print("src compile_commands.json exists")
         src_ccdb_file.unlink()
@@ -166,24 +179,13 @@ def clean_all(c):
         print("Install path absent. Nothing to do.")
 
 
-@task
+@task(aliases=["t"])
 def test(c):
-    """Run tests"""
+    """Run tests."""
     build_path = get_build_path()
+    tests_dir = build_path / "test"
     if build_path.exists():
-        cmd = ["ctest", f"--test-dir {BUILD_PATH}"]
+        cmd = ["ctest", f"--test-dir {tests_dir}"]
         c.run(" ".join(cmd), pty=True)
     else:
         print("Build path absent. Nothing to do.")
-
-
-@task
-def ls(c):
-    """List files using lsd and skip vcpkg and .cache folder"""
-    cmd = [
-        "lsd",
-        "--tree",
-        "--ignore-glob vcpkg",
-        "--ignore-glob .cache",
-    ]
-    c.run(" ".join(cmd), pty=True)

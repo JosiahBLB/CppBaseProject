@@ -10,17 +10,28 @@ His talk and repository can be found below:
 
 There are a number of things you need to do before you can start using this template:
 
-1. Download the following dependencies with your chosen package manager, I am using `brew` but you may use `apt`:
+1. Download the following dependencies:
 
 ```sh
-brew install clang
-brew install cmake
-brew install ninja
-brew install lsd
-python -m pip install invoke
+# Get clang++-21 for c++ 26
+sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" -- 21
+# Install the clang ABI and standard library for clang-21
+sudo apt install libc++-21-dev libc++abi-21-dev
+# Get the compatable debugger
+sudo apt install lldb-21
+
+# Install the required tools
+sudo apt install cmake ninja
+pipx install invoke
+
+# Vscode debugging and testing
+sudo apt install code
+code --install-extension ms-vscode.cmake-tools
+code --install-extension matepek.vscode-catch2-test-adapter
 ```
 
 2. Complete the TODO's in both the tasks.py and the top level CMakeLists.txt files.
+
 3. run
 
 ```sh
@@ -38,6 +49,7 @@ git submodule update --init --recursive
 ```
 
 5. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code in your CMakeLists.txt files of which I have added some instructions to help you with this in each file.
+
 6. Run
 
 ```sh

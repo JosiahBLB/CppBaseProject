@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb-dap",
+            "request": "launch",
+            "name": "Debug",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+            ],
+            "env": {
+            },
+            "debugAdapterExecutable": "/usr/bin/lldb-dap-21"
+        }
+    ]
+}
