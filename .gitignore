@@ -2,3 +2,4 @@
 vcpkg_installed/
 compile_commands.json
 build/
+.env

@@ -5,9 +5,8 @@ enable_testing()
 
 add_executable(example_test example_test.cpp)
 
-find_package(GTest CONFIG REQUIRED)
-target_link_libraries(example_test PRIVATE GTest::gtest GTest::gtest_main
-                                           GTest::gmock GTest::gmock_main)
+find_package(Catch2 3 CONFIG REQUIRED)
+target_link_libraries(example_test PRIVATE Catch2::Catch2WithMain)
 
-include(GoogleTest)
-gtest_discover_tests(example_test)
+include(Catch)
+catch_discover_tests(example_test)

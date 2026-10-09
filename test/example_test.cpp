@@ -1,9 +1,11 @@
-#include <gtest/gtest.h>
+#include <catch2/catch_test_macros.hpp>
+
+#include <string_view>
 
 // Demonstrate some basic assertions.
-TEST(HelloTest, BasicAssertions) {
+TEST_CASE("Basic assertions", "[hello]") {
     // Expect two strings not to be equal.
-    EXPECT_STRNE("hello", "world");
+    CHECK(std::string_view{"hello"} != std::string_view{"world"});
     // Expect equality.
-    EXPECT_EQ(7 * 6, 42);
+    CHECK(7 * 6 == 42);
 }

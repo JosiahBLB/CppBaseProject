@@ -11,4 +11,5 @@ add_executable(main main.cpp)
 # find_package(glfw3 CONFIG REQUIRED)
 # target_link_libraries(main PRIVATE glfw)
 
+# Copies the binary to /usr/local/bin
 install(TARGETS main)

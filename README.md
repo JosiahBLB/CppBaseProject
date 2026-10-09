@@ -1,61 +1,30 @@
-# Cpp Template
-
-This serves as a template for any cpp projects, some of this code was taken from Prateek Raman's repository.
-His talk and repository can be found below:
-
-- Repositoy: https://github.com/vvnraman/cppcon-2022-cpp-neovim-toy-calc
-- CppCon talk: https://www.youtube.com/watch?v=nzRnWUjGJl8
-
 ## Getting Started
 
 There are a number of things you need to do before you can start using this template:
 
-1. Download the following dependencies:
+1. Complete the TODO's in the top level CMakeLists.txt file.
+
+2. run
 
 ```sh
-# Get clang++-21 for c++ 26
-sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" -- 21
-# Install the clang ABI and standard library for clang-21
-sudo apt install libc++-21-dev libc++abi-21-dev
-# Get the compatable debugger
-sudo apt install lldb-21
-
-# Install the required tools
-sudo apt install cmake ninja
-pipx install invoke
-
-# Vscode debugging and testing
-sudo apt install code
-code --install-extension ms-vscode.cmake-tools
-code --install-extension matepek.vscode-catch2-test-adapter
+just init
 ```
 
-2. Complete the TODO's in both the tasks.py and the top level CMakeLists.txt files.
-
-3. run
-
-```sh
-git submodule update --init --recursive
-./vcpkg/bootstrap-vcpkg.sh -disableMetrics
-
-```
-
-4. Search for a c++ library use `./vcpkg/vcpkg search <package-name>` and add it to your vcpkg.json i,e:
+3. Search for a c++ library use `just vcpkg search <package-name>` and add it to your vcpkg.json i,e:
 
 ```json
 {
-  "dependencies": ["gtest", "package2", "package3"]
+  "dependencies": ["catch2", "package2", "package3"]
 }
 ```
 
-5. Run `./vcpkg/vcpkg install`, this will instruct you to add a few lines of code in your CMakeLists.txt files of which I have added some instructions to help you with this in each file.
+4. Run `just vcpkg install`, this will instruct you to add a few lines of code in your CMakeLists.txt files of which I have added some instructions to help you with this in each file.
 
 6. Run
 
 ```sh
-inv config
-inv build
-inv test
+just build
+just test
 ```
 
 7. Tell Josiah he's a good bugger
