@@ -16,8 +16,22 @@ set(VCPKG_OVERLAY_TRIPLETS "${CMAKE_SOURCE_DIR}/triplets")
 set(CMAKE_C_COMPILER "clang-21")
 set(CMAKE_CXX_COMPILER "clang++-21")
 
-# TODO: Replace 'my-project' with your project name:
-project(my-project CXX)
+# Project name comes from PROJECT_NAME in the environment, falling back to .env
+# so configuring outside of `just` (e.g. vscode cmake tools) still works
+if(DEFINED ENV{PROJECT_NAME})
+  set(name "$ENV{PROJECT_NAME}")
+elseif(EXISTS "${CMAKE_CURRENT_LIST_DIR}/.env")
+  set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_LIST_DIR}/.env")
+  file(STRINGS "${CMAKE_CURRENT_LIST_DIR}/.env" name
+    REGEX "^PROJECT_NAME=" LIMIT_COUNT 1)
+  string(REGEX REPLACE "^PROJECT_NAME=" "" name "${name}")
+endif()
+if(NOT name)
+  message(FATAL_ERROR "PROJECT_NAME is not set, add it to .env (see .env.sample)")
+endif()
+
+project("${name}" CXX)
 
 # Ensure libc++ for everything
 add_compile_options(-stdlib=libc++)
@@ -27,4 +41,3 @@ add_subdirectory(include)
 add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(test)
-# TODO: (optional) add other directories such as scripts, doc, etc.
